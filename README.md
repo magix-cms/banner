@@ -5,7 +5,7 @@ Plugin Banner for Magix CMS 3
 
 ### version 
 
-[![release](https://img.shields.io/github/release/magix-cms/slideshow.svg)](https://github.com/magix-cms/slideshow/releases/latest)
+[![release](https://img.shields.io/github/release/magix-cms/banner.svg)](https://github.com/magix-cms/banner/releases/latest)
 
 ## Installation
  * Décompresser l'archive dans le dossier "plugins" de magix cms
