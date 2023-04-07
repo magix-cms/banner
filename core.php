@@ -68,7 +68,7 @@ class plugins_banner_core extends plugins_banner_admin
 
                     if(isset($this->img) && !empty($this->img)) {
                         if(isset($this->banner['id']) && !empty($this->banner['id'])) {
-                            $setImgDirectory = $this->upload->dirImgUpload(['upload_root_dir' => 'upload/banner/' . $this->banner['id'],'imgBasePath' => true]);
+                            $setImgDirectory = $this->routingUrl->dirUpload('upload/banner/' . $this->banner['id'],true);
 
                             if (file_exists($setImgDirectory)) {
                                 $setFiles = $this->finder->scanDir($setImgDirectory);

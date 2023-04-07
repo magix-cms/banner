@@ -2,134 +2,146 @@
 /**
  * Class plugins_banner_db
  */
-class plugins_banner_db
-{
+class plugins_banner_db {
+	/**
+	 * @var debug_logger $logger
+	 */
+	protected debug_logger $logger;
+
 	/**
 	 * @param array $config
-	 * @param bool $params
-	 * @return mixed|null
+	 * @param array $params
+	 * @return array|bool
 	 */
-    public function fetchData(array $config, $params = false)
-	{
-        $sql = '';
+    public function fetchData(array $config, array $params = []) {
+		if($config['context'] === 'all') {
+			switch ($config['type']) {
+				case 'banners':
+					$query = 'SELECT 
+								id_banner,
+								url_banner,
+								img_banner,
+								title_banner,
+								desc_banner
+							FROM mc_banner ms
+							LEFT JOIN mc_banner_content msc USING(id_banner)
+							LEFT JOIN mc_lang ml USING(id_lang)
+							WHERE ml.id_lang = :lang
+							  AND ms.module_banner = :module
+							  AND ms.id_module '.(empty($params['id_module']) ? 'IS NULL' : '= :id_module').'
+							ORDER BY ms.order_banner';
+					if(empty($params['id_module'])) unset($params['id_module']);
+					break;
+				case 'activebanners':
+					$query = 'SELECT 
+								id_banner,
+								url_banner,
+								blank_banner,
+								img_banner,
+								title_banner,
+								desc_banner
+							FROM mc_banner ms
+							LEFT JOIN mc_banner_content msc USING(id_banner)
+							LEFT JOIN mc_lang ml USING(id_lang)
+							WHERE iso_lang = :lang
+							  AND ms.module_banner = :module_banner
+							  AND ms.id_module '.(empty($params['id_module']) ? 'IS NULL' : '= :id_module').'
+							  AND published_banner = 1
+							ORDER BY order_banner';
+					if(empty($params['id_module'])) unset($params['id_module']);
+					break;
+				case 'bannerContent':
+					$query = 'SELECT ms.*, msc.*
+							FROM mc_banner ms
+							JOIN mc_banner_content msc USING(id_banner)
+							JOIN mc_lang ml USING(id_lang)
+							WHERE ms.id_banner = :id';
+					break;
+				case 'img':
+					$query = 'SELECT ms.id_banner, ms.img_banner FROM mc_banner ms';
+					break;
+				default:
+					return false;
+			}
 
-        if(is_array($config)) {
-            if($config['context'] === 'all') {
-            	switch ($config['type']) {
-					case 'banners':
-						$sql = 'SELECT 
-									id_banner,
-									url_banner,
-									img_banner,
-									title_banner,
-									desc_banner
- 								FROM mc_banner ms
-								LEFT JOIN mc_banner_content msc USING(id_banner)
-								LEFT JOIN mc_lang ml USING(id_lang)
-								WHERE ml.id_lang = :lang
-								  AND ms.module_banner = :module
-                                  AND ms.id_module '.(empty($params['id_module']) ? 'IS NULL' : '= :id_module').'
-								ORDER BY ms.order_banner';
-						if(empty($params['id_module'])) unset($params['id_module']);
-						break;
-					case 'activebanners':
-						$sql = 'SELECT 
-									id_banner,
-									url_banner,
-									blank_banner,
-									img_banner,
-									title_banner,
-									desc_banner
- 								FROM mc_banner ms
-								LEFT JOIN mc_banner_content msc USING(id_banner)
-								LEFT JOIN mc_lang ml USING(id_lang)
-								WHERE iso_lang = :lang
-								  AND ms.module_banner = :module_banner
-								  AND ms.id_module '.(empty($params['id_module']) ? 'IS NULL' : '= :id_module').'
-								  AND published_banner = 1
-								ORDER BY order_banner';
-                        if(empty($params['id_module'])) unset($params['id_module']);
-						break;
-					case 'bannerContent':
-						$sql = 'SELECT ms.*, msc.*
-                    			FROM mc_banner ms
-                    			JOIN mc_banner_content msc USING(id_banner)
-                    			JOIN mc_lang ml USING(id_lang)
-                    			WHERE ms.id_banner = :id';
-						break;
-					case 'img':
-						$sql = 'SELECT ms.id_banner, ms.img_banner FROM mc_banner ms WHERE ms.img_banner IS NOT NULL';
-						break;
-				}
+			try {
+				return component_routing_db::layer()->fetchAll($query, $params);
+			}
+			catch (Exception $e) {
+				if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+				$this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+			}
+		}
+		elseif($config['context'] === 'one') {
+			switch ($config['type']) {
+				case 'bannerContent':
+					$query = 'SELECT * FROM mc_banner_content WHERE id_banner = :id AND id_lang = :id_lang';
+					break;
+				case 'lastbanner':
+					$query = 'SELECT * FROM mc_banner ORDER BY id_banner DESC LIMIT 0,1';
+					break;
+				case 'img':
+					$query = 'SELECT * FROM mc_banner WHERE id_banner = :id';
+					break;
+				default:
+					return false;
+			}
 
-                return $sql ? component_routing_db::layer()->fetchAll($sql,$params) : null;
-            }
-            elseif($config['context'] === 'one') {
-				switch ($config['type']) {
-					case 'bannerContent':
-						$sql = 'SELECT * FROM mc_banner_content WHERE id_banner = :id AND id_lang = :id_lang';
-						break;
-					case 'lastbanner':
-						$sql = 'SELECT * FROM mc_banner ORDER BY id_banner DESC LIMIT 0,1';
-						break;
-					case 'img':
-						$sql = 'SELECT * FROM mc_banner WHERE id_banner = :id';
-						break;
-				}
-
-                return $sql ? component_routing_db::layer()->fetch($sql,$params) : null;
-            }
-        }
+			try {
+				return component_routing_db::layer()->fetch($query, $params);
+			}
+			catch (Exception $e) {
+				if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+				$this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
+			}
+		}
+		return false;
     }
 
     /**
      * @param array $config
      * @param array $params
-	 * @return bool|string
+	 * @return bool
      */
-    public function insert(array $config, $params = [])
-    {
-		$sql = '';
-
+    public function insert(array $config, array $params = []): bool {
 		switch ($config['type']) {
 			case 'banner':
-				$sql = "INSERT INTO mc_banner(img_banner, module_banner, id_module, order_banner) 
+				$query = "INSERT INTO mc_banner(img_banner, module_banner, id_module, order_banner) 
 						SELECT 'temp', :module, :id_module, COUNT(id_banner) FROM mc_banner WHERE module_banner = '".$params['module']."'";
 				break;
 			case 'bannerContent':
-				$sql = 'INSERT INTO mc_banner_content(id_banner, id_lang, title_banner, desc_banner, url_banner, blank_banner, published_banner)
+				$query = 'INSERT INTO mc_banner_content(id_banner, id_lang, title_banner, desc_banner, url_banner, blank_banner, published_banner)
 						VALUES (:id_banner, :id_lang, :title_banner, :desc_banner, :url_banner, :blank_banner, :published_banner)';
 				break;
+			default:
+				return false;
 		}
 
-		if($sql === '') return 'Unknown request asked';
-
 		try {
-			component_routing_db::layer()->insert($sql,$params);
+			component_routing_db::layer()->insert($query,$params);
 			return true;
 		}
 		catch (Exception $e) {
-			return 'Exception : '.$e->getMessage();
+			if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+			$this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
 		}
+		return false;
     }
 
 	/**
 	 * @param array $config
 	 * @param array $params
-	 * @return bool|string
+	 * @return bool
 	 */
-    public function update(array $config, $params = [])
-    {
-		$sql = '';
-
+    public function update(array $config, array $params = []): bool {
 		switch ($config['type']) {
             case 'img':
-                $sql = 'UPDATE mc_banner
+                $query = 'UPDATE mc_banner
 						SET img_banner = :img
 						WHERE id_banner = :id';
                 break;
 			case 'bannerContent':
-				$sql = 'UPDATE mc_banner_content
+				$query = 'UPDATE mc_banner_content
 						SET 
 							title_banner = :title_banner,
 							desc_banner = :desc_banner,
@@ -140,47 +152,48 @@ class plugins_banner_db
 						AND id_lang = :id_lang';
 				break;
 			case 'order':
-				$sql = 'UPDATE mc_banner 
+				$query = 'UPDATE mc_banner 
 						SET order_banner = :order_banner
 						WHERE id_banner = :id_banner';
 				break;
+			default:
+				return false;
 		}
 
-		if($sql === '') return 'Unknown request asked';
-
 		try {
-			component_routing_db::layer()->update($sql,$params);
+			component_routing_db::layer()->update($query,$params);
 			return true;
 		}
 		catch (Exception $e) {
-			return 'Exception : '.$e->getMessage();
+			if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+			$this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
 		}
+		return false;
     }
 
 	/**
 	 * @param array $config
 	 * @param array $params
-	 * @return bool|string
+	 * @return bool
 	 */
-	protected function delete(array $config, $params = [])
-    {
-		$sql = '';
-
+	protected function delete(array $config, array $params = []): bool {
 		switch ($config['type']) {
 			case 'banner':
-				$sql = 'DELETE FROM mc_banner WHERE id_banner IN('.$params['id'].')';
+				$query = 'DELETE FROM mc_banner WHERE id_banner IN('.$params['id'].')';
 				$params = [];
 				break;
+			default:
+				return false;
 		}
-
-		if($sql === '') return 'Unknown request asked';
-
+		
 		try {
-			component_routing_db::layer()->delete($sql,$params);
+			component_routing_db::layer()->delete($query,$params);
 			return true;
 		}
 		catch (Exception $e) {
-			return 'Exception : '.$e->getMessage();
+			if(!isset($this->logger)) $this->logger = new debug_logger(MP_LOG_DIR);
+			$this->logger->log('statement','db',$e->getMessage(),$this->logger::LOG_MONTH);
 		}
+		return false;
 	}
 }

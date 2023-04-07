@@ -19,10 +19,39 @@
 	</authors>
 	<release>
 		<date_create>16/07/2021</date_create>
-		<date_update>16/07/2021</date_update>
-		<version>1.0</version>
+		<date_update>07/04/2023</date_update>
+		<version>1.1</version>
 		<phase>Stable</phase>
 	</release>
+	<bind>
+		<core>
+			<name>home</name>
+		</core>
+		<core>
+			<name>about</name>
+		</core>
+		<core>
+			<name>pages</name>
+		</core>
+		<core>
+			<name>news</name>
+		</core>
+		<core>
+			<name>catalog</name>
+		</core>
+		<core>
+			<name>category</name>
+		</core>
+		<core>
+			<name>product</name>
+		</core>
+		<plugin>
+			<name>contact</name>
+		</plugin>
+		<plugin>
+			<name>gmap</name>
+		</plugin>
+	</bind>
 	<support>
 		<ticket href="https://github.com/magix-cms/slideshow/issues"></ticket>
 		<git href="https://github.com/magix-cms/slideshow"></git>

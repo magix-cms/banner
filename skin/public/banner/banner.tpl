@@ -1,5 +1,5 @@
 {if !isset($type)}
-    {$type = 'owl-carousel'}
+    {$type = 'tns'}
 {/if}
 {if is_array($banners) && $banners != null}
     {if $amp}
@@ -118,6 +118,37 @@
             </div>
             <div class="owl-banner-nav">
                 <div class="owl-banner-dots"></div>
+            </div>
+        </div>
+        {elseif $type === 'tns'}
+            <div id="{$id_bannerr}">
+            <div class="slideshow">
+                {foreach $banners as $k => $banner}
+                    <div class="banner" data-dot="<span><span>banner {$k}</span></span>">
+                        {strip}<picture>
+                            <!--[if IE 9]><video style="display: none;"><![endif]-->
+                            <source type="image/webp" sizes="{$banner.img['large']['w']}px" media="(min-width: 1200px)" srcset="{$banner.img['large']['src_webp']} {$banner.img['large']['w']}w">
+                            <source type="image/webp" sizes="{$banner.img['medium']['w']}px" media="(min-width: 768px)" srcset="{$banner.img['medium']['src_webp']} {$banner.img['medium']['w']}w">
+                            <source type="image/webp" sizes="{$banner.img['small']['w']}px" srcset="{$banner.img['small']['src_webp']} {$banner.img['small']['w']}w">
+                            <source type="image/png" sizes="{$banner.img['large']['w']}px" media="(min-width: 1200px)" srcset="{$banner.img['large']['src']} {$banner.img['large']['w']}w">
+                            <source type="image/png" sizes="{$banner.img['medium']['w']}px" media="(min-width: 768px)" srcset="{$banner.img['medium']['src']} {$banner.img['medium']['w']}w">
+                            <source type="image/png" sizes="{$banner.img['small']['w']}px" srcset="{$banner.img['small']['src']} {$banner.img['small']['w']}w">
+                            <!--[if IE 9]></video><![endif]-->
+                            <img src="{$banner.img['small']['src']}" sizes="(min-width: 1200px) {$banner.img['large']['w']}px, (min-width: 768px) {$banner.img['medium']['w']}px, {$banner.img['small']['w']}px" srcset="{$banner.img['large']['src']} {$banner.img['large']['w']}w,
+                                {$banner.img['medium']['src']} {$banner.img['medium']['w']}w,
+                                {$banner.img['small']['src']} {$banner.img['small']['w']}w" alt="{$banner.title_banner}" title="{$banner.title_banner}" class="img-responsive lazyload" />
+                            </picture>{/strip}
+                        <div class="carousel-caption">
+                            <h3>{$banner.title_banner}</h3>
+                            {if !empty($banner.desc_banner)}
+                                <p>{$banner.desc_banner}</p>
+                            {/if}
+                        </div>
+                        {if isset($banner.url_banner) && !empty($banner.url_banner)}
+                            <a href="{$banner.url_banner}" title="{$key.title_banner}" class="all-hover{if $banner.blank_banner} targetblank{/if}">{$banner.title_banner}</a>
+                        {/if}
+                    </div>
+                {/foreach}
             </div>
         </div>
         {/if}

@@ -86,39 +86,33 @@ class plugins_banner_public extends plugins_banner_db
 	}
 
 	/**
+	 * @return void
+	 */
+	private function initImageComponent(): void {
+		if(!isset($this->imagesComponent)) $this->imagesComponent = new component_files_images($this->template);
+	}
+
+	/**
 	 * @param array $data
 	 * @return array
 	 */
-	private function setItembannerData(array $data): array
+	private function setItemBannerData(array $data): array
 	{
 		$arr = [];
         $extwebp = 'webp';
         if(!empty($data)) {
-            $this->imagesComponent = new component_files_images($this->template);
+			$this->initImageComponent();
 
             foreach ($data as $banner) {
-                $arr[$banner['id_banner']] = [];
-                $arr[$banner['id_banner']]['id_banner'] = $banner['id_banner'];
-                $arr[$banner['id_banner']]['id_lang'] = $banner['id_lang'];
-                $arr[$banner['id_banner']]['title_banner'] = $banner['title_banner'];
-                $arr[$banner['id_banner']]['desc_banner'] = $banner['desc_banner'];
-                $arr[$banner['id_banner']]['url_banner'] = $banner['url_banner'];
-                $arr[$banner['id_banner']]['blank_banner'] = $banner['blank_banner'];
-
-                $imgPrefix = $this->imagesComponent->prefix();
-                $fetchConfig = $this->imagesComponent->getConfigItems([
-                    'module_img'    =>'plugins',
-                    'attribute_img' =>'banner'
-                ]);
-                $imgData = pathinfo($banner['img_banner']);
-                $filename = $imgData['filename'];
-                foreach ($fetchConfig as $key => $value) {
-                    $arr[$banner['id_banner']]['img'][$value['type_img']]['src'] = '/upload/banner/'.$banner['id_banner'].'/'.$imgPrefix[$value['type_img']] . $banner['img_banner'];
-                    $arr[$banner['id_banner']]['img'][$value['type_img']]['src_webp'] = '/upload/banner/'.$banner['id_banner'].'/'.$imgPrefix[$value['type_img']].$filename.'.'.$extwebp;
-                    $arr[$banner['id_banner']]['img'][$value['type_img']]['w'] = $value['width_img'];
-                    $arr[$banner['id_banner']]['img'][$value['type_img']]['h'] = $value['height_img'];
-                    $arr[$banner['id_banner']]['img'][$value['type_img']]['crop'] = $value['resize_img'];
-                }
+                $arr[$banner['id_banner']] = [
+					'id_banner' => $banner['id_banner'],
+					'id_lang' => $banner['id_lang'],
+					'title_banner' => $banner['title_banner'],
+					'desc_banner' => $banner['desc_banner'],
+					'url_banner' => $banner['url_banner'],
+					'blank_banner' => $banner['blank_banner'],
+					'img' => $this->imagesComponent->setModuleImage('banner','banner',$banner['img_banner'],$banner['id_banner'])
+				];
             }
         }
 		return $arr;
@@ -131,6 +125,6 @@ class plugins_banner_public extends plugins_banner_db
 	public function getbanners($params = []): array
 	{
         $banners = $this->getItems('activebanners',['module_banner' => $params['controller'] ?? 'home','id_module' => $params['id_module'] ?? NULL,'lang' => $this->getlang],'all', false);
-        return $this->setItembannerData($banners);
+        return $this->setItemBannerData($banners);
 	}
 }

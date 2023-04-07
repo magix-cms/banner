@@ -231,7 +231,7 @@ class plugins_banner_admin extends plugins_banner_db
                     'name'            => filter_rsa::randMicroUI(),
                     'edit'            => $name,
                     'prefix'          => ['s_','m_','l_'],
-                    'module_img'      => 'plugins',
+                    'module_img'      => 'banner',
                     'attribute_img'   => 'banner',
                     'original_remove' => false
                 ], [
@@ -260,7 +260,7 @@ class plugins_banner_admin extends plugins_banner_db
 	 */
 	protected function delete_image($id): bool
 	{
-        $setImgDirectory = $this->upload->dirImgUpload(['upload_root_dir' => 'upload/banner/'.$id, 'imgBasePath' => true]);
+        $setImgDirectory = $this->routingUrl->dirUpload('upload/banner/'.$id, true);
 
         if (file_exists($setImgDirectory)) {
             $setFiles = $this->finder->scanDir($setImgDirectory);
@@ -334,8 +334,7 @@ class plugins_banner_admin extends plugins_banner_db
 	/**
 	 * @access public
 	 */
-	/*public function run()
-	{
+	/*public function run() {
 		if(isset($this->action)) {
             switch ($this->action) {
                 case 'add':
@@ -359,14 +358,14 @@ class plugins_banner_admin extends plugins_banner_db
 
                         if(isset($this->img) && !empty($this->img)) {
                             if(isset($this->banner['id']) && !empty($this->banner['id'])) {
-                                $setImgDirectory = $this->upload->dirImgUpload(['upload_root_dir' => 'upload/banner/' . $this->banner['id'],'imgBasePath' => true]);
+                                $setImgDirectory = $this->routingUrl->dirUpload('upload/banner/' . $this->banner['id'],true);
 
                                 if (file_exists($setImgDirectory)) {
                                     $setFiles = $this->finder->scanDir($setImgDirectory);
                                     $clean = '';
                                     if ($setFiles != null) {
                                         foreach ($setFiles as $file) {
-                                            $clean .= $this->makeFiles->remove($setImgDirectory . $file);
+                                            $this->makeFiles->remove($setImgDirectory . $file);
                                         }
                                     }
                                 }

@@ -1,6 +1,6 @@
 <div class="row">
     <form id="edit_banner" action="{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}&amp;tabs=banner&amp;action={if !$edit}add{else}edit{/if}" method="post" class="validate_form{if !$edit} add_form collapse in{else} edit_form{/if} col-ph-12 col-sm-8 col-md-6">
-        <div id="drop-zone"{if !isset($banner.img_banner) || empty($banner.img_banner)} class="no-img"{/if}>
+        {*<div id="drop-zone"{if !isset($banner.img_banner) || empty($banner.img_banner)} class="no-img"{/if}>
             <div id="drop-buttons" class="form-group">
                 <label id="clickHere" class="btn btn-default">
                     ou cliquez ici.. <span class="fa fa-upload"></span>
@@ -16,6 +16,20 @@
                     <img id="preview" src="#" alt="Déposez votre images ici..." class="no-img img-responsive" />
                 {/if}
             </div>
+        </div>*}
+        <div class="dropzone img-drop{if !isset($banner.img_banner) || empty($banner.img_banner)} no-img{/if}" data-preview="true">
+            <div class="preview-img">
+                <img src="{if isset($banner.img_banner) && !empty($banner.img_banner)}/upload/banner/{$banner.id_banner}/{$banner.img_banner}}{else}#{/if}"
+                     alt="{#drop_img_here#}"
+                     class="{if isset($banner.img_banner) && !empty($banner.img_banner)}preview{else}no-img{/if} img-responsive" />
+            </div>
+            <div class="drop-buttons form-group">
+                {*<div class="drop-text">{#drop_here#}</div>*}
+                <label class="btn btn-default" for="img">ou cliquez ici.. <span class="fa fa-upload"></span></label>
+            </div>
+            <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />
+            <input type="hidden" id="id_cat" name="id" value="{$banner.id_banner}">
+            <input type="file" accept="image/*" id="img" name="img" value="" />
         </div>
         {include file="language/brick/dropdown-lang.tpl"}
         <div class="row">
