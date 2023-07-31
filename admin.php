@@ -131,6 +131,13 @@ class plugins_banner_admin extends plugins_banner_db
 		return $this->template->getConfigVars('banner_plugin');
 	}
 
+	/**
+	 * @return void
+	 */
+	private function initImageComponent(): void {
+		if(!isset($this->imagesComponent)) $this->imagesComponent = new component_files_images($this->template);
+	}
+
 	// --- Database actions
 
 	/**
@@ -286,19 +293,22 @@ class plugins_banner_admin extends plugins_banner_db
 	{
 		$arr = [];
 		if(!empty($data)) {
+			$this->initImageComponent();
+
             foreach ($data as $banner) {
                 if (!array_key_exists($banner['id_banner'], $arr)) {
                     $arr[$banner['id_banner']] = [];
                     $arr[$banner['id_banner']]['id_banner'] = $banner['id_banner'];
                     $arr[$banner['id_banner']]['img_banner'] = $banner['img_banner'];
-                    $imgPrefix = $this->imagesComponent->prefix();
+                    /*$arr[$banner['id_banner']]['img'] = $this->imagesComponent->setModuleImage('banner','banner',$banner['img_banner'],$banner['id_banner']);*/
+                    /*$imgPrefix = $this->imagesComponent->prefix();
                     $fetchConfig = $this->imagesComponent->getConfigItems([
                         'module_img'    =>'banner',
                         'attribute_img' =>'banner'
                     ]);
                     foreach ($fetchConfig as $key => $value) {
                         $arr[$banner['id_banner']]['imgSrc'][$value['type_img']] = '/upload/banner/'.$banner['id_banner'].'/'.$imgPrefix[$value['type_img']] . $banner['img_banner'];
-                    }
+                    }*/
                 }
 
                 $arr[$banner['id_banner']]['content'][$banner['id_lang']] = [

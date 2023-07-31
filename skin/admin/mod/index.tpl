@@ -3,7 +3,7 @@
 {block name="plugin:content"}
 {if {employee_access type="view" class_name=$cClass} eq 1}
     <p class="text-right">
-        {#nbr_banner#|ucfirst}: {$banners|count}<a href="{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}&amp;action=edit&amp;edit={$smarty.get.edit}&amp;plugin={$smarty.get.plugin}&amp;mod_action=add" title="{#add_banner#}" class="btn btn-link">
+        {#nbr_banner#|ucfirst}: {$banners|count}<a href="{$smarty.server.SCRIPT_NAME}?controller={$smarty.get.controller}{if isset($smarty.get.edit)}&amp;action=edit&amp;edit={$smarty.get.edit}{/if}&amp;plugin={$smarty.get.plugin}&amp;mod_action=add" title="{#add_banner#}" class="btn btn-link">
             <span class="fa fa-plus"></span> {#add_banner#|ucfirst}
         </a>
     </p>
