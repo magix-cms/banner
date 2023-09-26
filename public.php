@@ -59,7 +59,7 @@ class plugins_banner_public extends plugins_banner_db
      * @var string
      */
 	protected
-        $getlang;
+        $lang;
 
     /**
      * plugins_banner_public constructor.
@@ -69,7 +69,7 @@ class plugins_banner_public extends plugins_banner_db
     {
 		$this->template = $t instanceof frontend_model_template ? $t : new frontend_model_template();
         $this->data = new frontend_model_data($this,$this->template);
-		$this->getlang = $this->template->lang;
+		$this->lang = $this->template->lang;
 	}
 
 	/**
@@ -118,13 +118,13 @@ class plugins_banner_public extends plugins_banner_db
 		return $arr;
 	}
 
-	/**
-	 * @param array $params
-	 * @return array
-	 */
-	public function getbanners($params = []): array
+    /**
+     * @param array $params
+     * @return array
+     */
+	public function getBanners(array $params = []): array
 	{
-        $banners = $this->getItems('activebanners',['module_banner' => $params['controller'] ?? 'home','id_module' => $params['id_module'] ?? NULL,'lang' => $this->getlang],'all', false);
+        $banners = $this->getItems('activebanners',['module_banner' => $params['controller'] ?? 'home','id_module' => $params['id_module'] ?? NULL,'lang' => $this->lang],'all', false);
         return $this->setItemBannerData($banners);
 	}
 }

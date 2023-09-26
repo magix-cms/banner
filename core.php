@@ -176,6 +176,7 @@ class plugins_banner_core extends plugins_banner_admin
                     $extends = $this->controller.'/index.tpl';
                     break;
                 case 'pages':
+                case 'home':
                     $extends = $this->controller.'/edit.tpl';
                     break;
                 default:
