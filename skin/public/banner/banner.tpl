@@ -1,5 +1,5 @@
 {banner_data controller='home'}
-{$banner = $banners|array_shift}
+{$banner = array_shift($banners)}
 {if !empty($banner)}
     <div id="banner">
         {strip}<picture>

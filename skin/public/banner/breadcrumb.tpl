@@ -1,8 +1,8 @@
 {banner_data controller='pages' id_module=$pages.id}
-{$banner = $banners|array_shift}
+{$banner = array_shift($banners)}
 {if empty($banner) && $pages.id_parent !== null}
     {banner_data controller='pages' id_module=$pages.id_parent}
-    {$banner = $banners|array_shift}
+    {$banner = array_shift($banners)}
 {/if}
 {if !empty($banner)}
     <div id="banner" class="breadcrumb-bg">
