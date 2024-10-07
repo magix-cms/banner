@@ -26,9 +26,9 @@ ALTER TABLE `mc_banner_content`
   ADD CONSTRAINT `mc_banner_content_ibfk_2` FOREIGN KEY (`id_lang`) REFERENCES `mc_lang` (`id_lang`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `mc_config_img` (`id_config_img`, `module_img`, `attribute_img`, `width_img`, `height_img`, `type_img`, `prefix_img`, `resize_img`) VALUES
-  (null, 'banner', 'banner', '320', '320', 'phone', 'ph', 'adaptive'),
-  (null, 'banner', 'banner', '536', '536', 'xsmall', 'xs', 'adaptive'),
-  (null, 'banner', 'banner', '768', '768', 'small', 'sm', 'adaptive'),
-  (null, 'banner', 'banner', '960', '960', 'medium', 'md', 'adaptive'),
-  (null, 'banner', 'banner', '1280', '1280', 'large', 'lg', 'adaptive'),
-  (null, 'banner', 'banner', '1920', '1280', 'xlarge', 'xl', 'adaptive');
+  (null, 'banner', 'banner', '320', '92', 'phone', 'ph', 'adaptive'),
+  (null, 'banner', 'banner', '536', '154', 'xsmall', 'xs', 'adaptive'),
+  (null, 'banner', 'banner', '768', '220', 'small', 'sm', 'adaptive'),
+  (null, 'banner', 'banner', '960', '275', 'medium', 'md', 'adaptive'),
+  (null, 'banner', 'banner', '1280', '367', 'large', 'lg', 'adaptive'),
+  (null, 'banner', 'banner', '1920', '551', 'xlarge', 'xl', 'adaptive');

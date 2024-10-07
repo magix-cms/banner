@@ -125,6 +125,9 @@ class plugins_banner_public extends plugins_banner_db
 	public function getBanners(array $params = []): array
 	{
         $banners = $this->getItems('activebanners',['module_banner' => $params['controller'] ?? 'home','id_module' => $params['id_module'] ?? NULL,'lang' => $this->lang],'all', false);
+        if(empty($banners) && isset($params['root'])){
+            $banners = $this->getItems('activebanners', ['module_banner' => $params['root'] ?? 'home', NULL, 'lang' => $this->lang], 'all', false);
+        }
         return $this->setItemBannerData($banners);
 	}
 }
